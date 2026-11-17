@@ -1,0 +1,62 @@
+import pygame
+
+pygame.init()
+screen = pygame.display.set_mode((600, 400))
+clock = pygame.time.Clock()
+
+# Animation variables
+cloud_x = 0
+sun_size = 30
+sky_blue = 255
+frames = 0
+show_star = False
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # 1. ANIMATIONS
+    frames += 1
+    cloud_x += 2          # Move compound shape
+    sun_size += 0.05      # Change size
+    if sky_blue > 50:     # Gradually change color
+        sky_blue -= 0.2
+
+    # 2. IF STATEMENTS
+    # Location check: reset cloud when it goes off-screen
+    if cloud_x > 650:
+        cloud_x = -100
+
+    # Frame check: after 120 frames (2 seconds), show a star
+    if frames > 120:
+        show_star = True
+
+    # 3. DRAWING
+    # Sky (gradually turns darker)
+    screen.fill((50, 100, int(sky_blue)))
+
+    # Simple shape: Sun (grows larger)
+    pygame.draw.circle(screen, (255, 255, 0), (500, 80), int(sun_size))
+
+    # Compound shape: Cloud (2 circles + 1 rectangle)
+    pygame.draw.circle(screen, (255, 255, 255), (cloud_x, 100), 25)
+    pygame.draw.circle(screen, (255, 255, 255), (cloud_x + 30, 100), 25)
+    pygame.draw.rect(screen, (255, 255, 255), (cloud_x, 100, 30, 25))
+
+    # Simple shape: Ground
+    pygame.draw.rect(screen, (34, 139, 34), (0, 300, 600, 100))
+
+    # Loop in a single frame: Picket fence
+    for x in range(0, 600, 30):
+        pygame.draw.rect(screen, (255, 255, 255), (x, 260, 15, 40))
+
+    # Draw star if enough frames have passed
+    if show_star:
+        pygame.draw.circle(screen, (255, 255, 200), (100, 50), 5)
+
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
